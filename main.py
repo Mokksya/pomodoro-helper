@@ -16,15 +16,15 @@ def countdown(minutes, task, width):
 
 
 # Запись в CSV данных о сессии
-def time_session(name, time_start, duration):
+def time_session(name, time_start, duration, status):
     session_file = Path.cwd() / "sessions.csv"
     if not session_file.exists():
         with session_file.open("w", encoding="utf-8", newline="") as f:
             write = csv.writer(f)
-            write.writerow(["name_session","start_session","duration"])
+            write.writerow(["name_session","start_session","duration", "is_completed"])
     with session_file.open("a", encoding="utf-8", newline="") as f:
         write = csv.writer(f)
-        write.writerow([name, time_start, duration])
+        write.writerow([name, time_start, duration, status])
 
 
 # Переменные
@@ -35,6 +35,7 @@ name_final = "Готовимся к следующей задаче"
 max_width = max(len(name_task), len(name_break), len(name_final))
 start_session = datetime.datetime.now()
 start_session_text = start_session.strftime("%Y-%m-%d %H:%M:%S")
+status = True
 
 # Круг таймеров
 try:
@@ -49,9 +50,10 @@ try:
     print("Отсчет окончен")
 except KeyboardInterrupt:
     print("\nТаймер прерван")
+    status = False
 
 
 # Запись в файл
 end_session = datetime.datetime.now()
 time_duration = end_session - start_session
-time_session(name_task, start_session_text, int(time_duration.total_seconds()))
+time_session(name_task, start_session_text, int(time_duration.total_seconds()), status)
